@@ -1,0 +1,207 @@
+body{
+    background-image: url("../img/fundo.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.logo{
+    height: auto;
+    cursor: pointer;
+}
+.logo img{
+    width: 50px;
+    height: auto;
+    margin: 10px;
+}
+.logo:hover img{
+    box-shadow: 0em 0em 1em #000;
+}
+.table{
+    margin-bottom: 0px;
+}
+.table thead th{
+    vertical-align: inherit;
+    padding: 0px;
+}
+.calendario{
+    height: 100%;
+}
+.calendario a{
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+.calendario a:hover{    
+    text-decoration: none;
+    color: inherit;
+}
+.calendario form{
+    padding: 0;
+    margin: 0;
+}
+.calendario thead tr:nth-child(2){
+    background-color: #222;
+    color: #fff;
+}
+.calendario thead tr:nth-child(1){
+    background: rgba(0, 0, 0, .5);
+}
+.calendario thead th form input[type='submit']{
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.calendario thead th form{
+    float: left;
+    width: 33.333%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.calendario thead th form:hover{
+    cursor: pointer;
+    background-color: #333;
+}
+.calendario thead th:nth-child(1):active{
+    cursor: pointer;
+    background-color: #444;
+}
+.calendario thead #inputData {
+    position: relative;
+    background-color: inherit;
+    border: 0;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+.calendario thead  #inputData:after {
+    content: "\25BC";
+    color: #555;
+    padding: 0 5px;
+    display: none;
+}
+.calendario thead  #inputData:hover:after {
+    color: #000;
+}
+.calendario thead #inputData::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    color: transparent;
+    background: transparent;
+}
+.calendario thead #inputData::-webkit-inner-spin-button {
+    z-index: 1;
+}
+.calendario thead #inputData::-webkit-clear-button {
+    z-index: 1;
+ }
+.calendario th{
+    height: 50px;
+}
+.calendario th, .calendario td{
+    text-align: center;
+}
+.calendario td{
+    cursor: pointer;
+    font-size: 14px;
+    background-color: #ddd;
+    font-weight: bold;
+}
+.calendario td div:nth-child(1){
+    display: inline;
+    border-radius: 50%;
+    padding: 2px;
+}
+.calendario td div:nth-child(2){
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 10px;
+    flex-wrap: wrap;
+}
+.calendario td div:nth-child(2) span{
+    font-size: 12px;
+    padding: 5px 0px;
+    margin: 2px 0px;
+}
+.calendario td div:nth-child(2) span:nth-child(1){
+    text-decoration: underline;
+    font-weight: normal;
+}
+.calendario td div:nth-child(2) span:nth-child(2){
+    background-color: blue;
+    color: #fff;
+}
+.calendario td div:nth-child(2) span:nth-child(3){
+    background-color: green;
+    color: #fff;
+}
+.calendario td div:nth-child(2) span:nth-child(4){
+    background-color: orange;
+    color: #fff;
+}
+
+.calendario td:hover div:nth-child(1){
+    box-shadow: 0px 0px 1px 1px #000;
+}
+.calendario .semanas{
+    background-color: #666;
+    color: #fff;
+}
+.calendario .semanas th{
+    height: 50px;
+}
+.calendario .dia{
+    background-color: #bbb;
+}
+.calendario .diaAtual div:nth-child(1){
+    display: inline;
+    border-radius: 50%;
+    background-color: blue;
+    background-color: cadetblue;
+    padding: 2px;
+}
+.calendario .diaPassado{
+    color: #999;
+    font-weight: inherit;
+}
+.calendario .ocupado{
+    background-color: indianred;
+    color: darkred;
+}
+.calendario .ocupado span:nth-child(1){
+    margin-top: 20px;
+}
+.modal-footer{
+    justify-content: space-between;
+}
+.modalGrupo{
+    display: flex;
+    justify-content: space-between;
+}
+.grupoItem{
+    display: flex;
+}
+.grupoItemInt{
+    width: 150px;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+}
+.profHorario{
+    color: green;
+    font-weight: bold;
+}
+#modalAgendar #inputNome{
+    text-transform: capitalize;
+}

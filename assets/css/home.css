@@ -1,0 +1,123 @@
+body{
+    background-image: url("../img/fundo.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.titulo{
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: bold;
+}
+.titulo h1{
+    width: fit-content;
+    margin: 0px;
+    margin-top: 20px;
+    color: #000;
+    letter-spacing: 20px;
+    text-shadow: 0 0 0.2em #fff, 0 0 0.2em #fff, 0 0 0.2em #fff, 0 0 0.2em #fff, 0 0 0.2em #FFF, 0 0 0.2em #fff;
+    font-weight: bold;
+    font-size: 50px;
+}
+.titulo h5{
+    margin: 0px;
+    color: #222;
+    text-shadow: 0 0 0.2em #fff, 0 0 0.2em #fff, 0 0 0.2em #fff, 0 0 0.2em #fff, 0 0 0.2em #FFF, 0 0 0.2em #fff;
+    font-size: 20px;
+}
+.horarios{
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.horarios span{
+    width: fit-content;
+    color: #000;
+    text-shadow: 0 0 0.2em #fff, 0 0 0.2em #fff, 0 0 0.2em #fff, 0 0 0.2em #fff, 0 0 0.2em #FFF, 0 0 0.2em #fff;
+    font-weight: bold;
+    text-align: center;
+}
+.social{
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 50px;
+    text-shadow: 0 0 0.2em #fff, 0 0 0.2em #fff, 0 0 0.2em #fff, 0 0 0.2em #fff, 0 0 0.2em #FFF, 0 0 0.2em #fff;
+    font-weight: bold;
+}
+.social a{
+    color: #000;
+    text-decoration: none;
+}
+.social a div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0px 10px;
+}
+.social img{
+    width: 50px;
+    height: auto;
+}
+.social span{
+    margin-top: 5px;
+    height: auto;
+    text-align: center;
+}
+footer{
+    min-height: 50px;
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+footer #menuMobile{
+    width: 40px;
+    display: none;
+    cursor: pointer;
+}
+footer ul{
+    width: 100%;
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+    display: flex;
+    justify-content: space-around;
+}
+footer ul li{
+    width: 200px;
+    height: 80px;
+    background: linear-gradient(#fff -30%, #000 50%, #fff 130%);
+    margin: 0px 15px;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 30px;    
+}
+footer ul li:hover{
+    cursor: pointer;
+    font-size: 35px;
+    box-shadow: 0px 0px 5px #fff;
+}
+footer ul li:active{
+    cursor: pointer;
+    font-size: 35px;
+    box-shadow: 0px 0px 5px #fff;
+}
+footer ul li a{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-decoration: none;
+}
+footer ul li a:hover{
+    color: #fff;
+    text-decoration: none;
+}

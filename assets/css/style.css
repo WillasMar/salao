@@ -1,0 +1,54 @@
+body{
+    margin: 0px;
+}
+.area{
+    height: 100%;
+    margin: 0px 50px;
+    background: rgba(0,0,0, 0.5);
+}
+.logo{
+    height: 150px;
+    text-align: center;
+}
+.logo img{
+    width: 130px;
+    margin-top: 10px;
+    box-shadow: 0em 0em 1em #fff;
+    border-radius: 10px;
+}
+.alert{
+    display: none;
+    position: fixed;
+    width: 100%;
+    max-width: 450px;
+    min-height: 200px;
+    top: 100px;    
+    left: 50%;
+    margin-left: -225px;
+    text-align: center;
+    font-size: 25px;
+    flex-direction: column;
+    box-shadow: 0px 0px 3px 1px;
+    padding: 25px;
+    z-index: 2000;
+}
+.alert img{
+    width: 50px;
+}
+.alert .btnFecharAlerta{
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    margin-left: 380px;
+    margin-top: -18px;    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.alert .btnFecharAlerta:hover{
+    color: #000;
+}
+.alert .nomePessoa{
+    text-transform: capitalize;
+}
