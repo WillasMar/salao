@@ -41,6 +41,7 @@
 		$dados['servicos'] = array(); //serviços do profissional		
 		$dados['horarios'] = array(); //horários disponíveis
 		$dados['profissionais'] = $profissionais->getDisponibilidade($diaSemana, 0); //profissionais disponíveis
+		$dados['profIndisponiveis'] = $profissionais->getIndisponibilidade($diaSemana, 0); //profissionais indisponíveis
 
 		//se haver profissional disponível
 		if( $dados['profissionais'] ){
@@ -106,10 +107,10 @@
 		echo json_encode($dados, JSON_FORCE_OBJECT);
 	}
 
-	/*$h = $agenda->getHorarios(1, 1, '2022-12-14');
-
+	$h = $profissionais->getIndisponibilidade(4, 0);
+	
 	echo '<pre>';
-	print_r($h);*/
+	print_r($h);
 
 		
 

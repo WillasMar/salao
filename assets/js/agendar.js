@@ -60,20 +60,38 @@ $(function(){
 	}
 
 	function preencheDados(horarios){
+		console.log(horarios)
+
 		let optionH = '' //horários
 		let optionP = '' //profissionais
 		let optionS = '' //serviços
+		let dtAgenda = horarios.data
 		
 		//descrição do expediente do profissional
 		let spanHora = horarios.profissionais[ horarios.keyProf ]['hora'].split(':')[0] + 'h às ' +
 			horarios.profissionais[ horarios.keyProf ]['hora_final'].split(':')[0] + 'h'
 
-		console.log(horarios)
 		if(horarios.profissionais){
 			for( let item in horarios.profissionais ){
 				let id = horarios.profissionais[item]['id_profissional']
 				let nome = horarios.profissionais[item]['nome']
-				optionP = optionP + '<option value="'+id+'">'+nome+'</option>'				
+				let idIndisponivel = 0
+
+				if(horarios.profIndisponiveis){
+					for(let item in horarios.profIndisponiveis){
+						if( id == horarios.profIndisponiveis[item]['id_profissional'] ){
+							idIndisponivel = id
+							break
+						}
+					}
+				}
+
+				if(idIndisponivel){
+					optionP = optionP + '<option value="'+id+'">*'+nome+'</option>'
+				}else{
+					optionP = optionP + '<option value="'+id+'"><span>'+nome+'</span></option>'
+				}
+								
 			}	
 		}
 
@@ -102,7 +120,15 @@ $(function(){
 		$('#profHorario').html(spanHora)
 
 		$('#formAgendar input').css('border-color', '#ced4da')
-		$('#formAgendar select').css('border-color', '#ced4da')				
+		$('#formAgendar select').css('border-color', '#ced4da')		
+
+		//se o option selecionado possuir um * indicando indisponibilidade
+		if( $('#formAgendar').find('#selectProfissional').find(':selected').text().indexOf('*') >= 0 ){
+			$('#profHorario').addClass('profHorarioOff')
+		}else{
+			$('#profHorario').removeClass('profHorarioOff')
+		}
+
 	}
 
 	//ao abrir modal agendar

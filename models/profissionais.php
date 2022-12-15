@@ -30,15 +30,15 @@
 			return $dados;
 		}
 
+		//busca disponibilidade pelo dia da semana
 		public function getDisponibilidade($semana, $prof){
 			$dados = array();
+			$and = '';
 
 			$semana = addslashes($semana);
 
 			if($prof){
 				$and = 'and profissionais_horarios.id_profissional = '.$prof;
-			}else{
-				$and = '';
 			}
 
 			$sql = "select 
@@ -59,6 +59,48 @@
 
 			if($sql->rowCount() > 0){
 				$dados = $sql->fetchAll();
+			}
+
+			return $dados;
+		}
+
+		//busca indisponibilidade pelo dia da semana
+		public function getIndisponibilidade($semana, $prof){
+			$dados = array();
+			$semana = addslashes($semana);
+			$prof = addslashes($prof);
+			$horaAtual = "'".date('H:i:s')."'";
+
+			/*/se informou profissional
+			if($prof){
+				$and = ' and profissionais_horarios.id_profissional = '.$prof;
+			}*/
+
+			//se for o dia da atual da semana
+			if( $semana == date('w') ){
+				$sql = "select 
+						profissionais_horarios.id, 
+						profissionais_horarios.id_profissional, 
+						profissionais_horarios.semana, 
+						profissionais_horarios.hora, 
+						profissionais_horarios.hora_final,
+						profissionais.nome,
+						(SELECT COUNT(*) FROM profissionais_servicos
+							WHERE profissionais_servicos.id_profissional = profissionais_horarios.id_profissional) as qtdServico
+					from profissionais_horarios 
+					inner join profissionais on profissionais.id = profissionais_horarios.id_profissional
+					where profissionais_horarios.semana = :semana and (:horaAtual not between  profissionais_horarios.hora AND profissionais_horarios.hora_final) and
+						(profissionais_horarios.id_profissional = :prof OR :prof = 0)
+					order by 7 desc";
+				$sql = $this->db->prepare($sql);
+				$sql->bindValue(':semana', $semana);
+				$sql->bindValue(':prof', $prof);
+				$sql->bindValue(':horaAtual', $horaAtual);
+				$sql->execute();
+
+				if($sql->rowCount() > 0){
+					$dados = $sql->fetchAll();
+				}
 			}
 
 			return $dados;

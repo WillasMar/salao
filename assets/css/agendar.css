@@ -167,6 +167,7 @@ body{
 .calendario .diaAtual div:nth-child(1){
     display: inline;
     border-radius: 50%;
+    border: 1px solid #fff;
     background-color: blue;
     background-color: cadetblue;
     padding: 2px;
@@ -200,6 +201,10 @@ body{
 }
 .profHorario{
     color: green;
+    font-weight: bold;
+}
+.profHorarioOff{
+    color: indianred;
     font-weight: bold;
 }
 #modalAgendar #inputNome{
