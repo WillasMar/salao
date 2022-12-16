@@ -110,7 +110,7 @@ $(function(){
 		}
 
 		if(horarios.data){
-			$('#formAgendar').find('#inputData').html(horarios.data)
+			$('#formAgendar').find('#inputData').val(horarios.data)
 		}		
 
 		$('#formAgendar').find('#selectHora').html(optionH)

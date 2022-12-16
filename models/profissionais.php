@@ -24,7 +24,7 @@
 			$sql->execute(array($id));
 
 			if($sql->rowCount() > 0){
-				$dados = $sql->fetchAll();
+				$dados = $sql->fetch();
 			}
 
 			return $dados;
@@ -71,11 +71,6 @@
 			$prof = addslashes($prof);
 			$horaAtual = "'".date('H:i:s')."'";
 
-			/*/se informou profissional
-			if($prof){
-				$and = ' and profissionais_horarios.id_profissional = '.$prof;
-			}*/
-
 			//se for o dia da atual da semana
 			if( $semana == date('w') ){
 				$sql = "select 
@@ -89,23 +84,25 @@
 							WHERE profissionais_servicos.id_profissional = profissionais_horarios.id_profissional) as qtdServico
 					from profissionais_horarios 
 					inner join profissionais on profissionais.id = profissionais_horarios.id_profissional
-					where profissionais_horarios.semana = :semana and (:horaAtual not between  profissionais_horarios.hora AND profissionais_horarios.hora_final) and
-						(profissionais_horarios.id_profissional = :prof OR :prof = 0)
+					where profissionais_horarios.semana = :semana and 
+					($horaAtual not between  profissionais_horarios.hora AND profissionais_horarios.hora_final)
+					and (profissionais_horarios.id_profissional = :prof OR :prof = 0)
 					order by 7 desc";
 				$sql = $this->db->prepare($sql);
 				$sql->bindValue(':semana', $semana);
 				$sql->bindValue(':prof', $prof);
-				$sql->bindValue(':horaAtual', $horaAtual);
 				$sql->execute();
 
 				if($sql->rowCount() > 0){
 					$dados = $sql->fetchAll();
 				}
+
 			}
 
 			return $dados;
 		}
 
+		//busca serviços dos profissionais
 		public function getServicos($prof){
 			$dados = array();
 
@@ -122,6 +119,31 @@
 			//se tiver serviço pro profissional
 			if($sql->rowCount() > 0){
 				$dados = $sql->fetchAll();
+			}
+
+			return $dados;
+		}
+
+		//busca serviço de um profissional
+		public function getServico($prof, $serv){
+			$dados = array();
+
+			$prof = addslashes($prof);
+			$serv = addslashes($serv); 			
+
+			$sql = "SELECT profissionais_servicos.id, 
+						profissionais_servicos.id_profissional,
+						profissionais_servicos.id_servico,
+						servicos.tempo
+					from profissionais_servicos
+					INNER JOIN servicos ON servicos.id = profissionais_servicos.id_servico 
+					where profissionais_servicos.id_profissional = ? and profissionais_servicos.id_servico = ?";
+			$sql = $this->db->prepare($sql);
+			$sql->execute(array($prof, $serv));
+
+			//se tiver serviço pro profissional
+			if($sql->rowCount() > 0){
+				$dados = $sql->fetch();
 			}
 
 			return $dados;

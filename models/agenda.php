@@ -31,6 +31,21 @@
 			return $dados;
 		}
 
+		//busca horários do profissional
+		public function getAgendamento($dt, $prof){
+			$sql = "SELECT hora from agenda 
+				where data = ? and id_profissional = ? 
+				order by 1";
+			$sql = $this->db->prepare($sql);
+			$sql->execute(array($dt, $prof));
+
+			if($sql->rowCount() > 0){
+				return $sql->fetchAll();
+			}else{
+				return false;
+			}
+		}
+
 		//recebe data, seviço e profissional
 		public function getHorarios($prof, $serv, $dt){
 			//se data estiver vazia ou menor que a data atual
@@ -42,31 +57,20 @@
 			$horarios = array(); //horários agendados
 			$semana = date( 'w', strtotime($dt) );
 
-			//busca disponibilidade do profissional
-			$sql = "SELECT * from profissionais_horarios 
-				where semana = ? and id_profissional = ?";
-			$sql = $this->db->prepare($sql);
-			$sql->execute(array($semana, $prof));				
+			$profissionais = new Profissionais();
+			$servicos = new Servicos();
 
-			//se profissional estiver disponível
-			if($sql->rowCount() > 0){
-				$profDisp = $sql->fetch(); //salva profissional
+			$profDisp = $profissionais->getDisponibilidade($semana, $prof);
+			$profIndisp = $profissionais->getIndisponibilidade($semana, $prof);			
 
+			//se profissional não estiver indisponível
+			if(!$profIndisp){
 				//busca serviço vinculado ao profissional
-				$sql = "SELECT profissionais_servicos.id, 
-						profissionais_servicos.id_profissional,
-						profissionais_servicos.id_servico,
-						servicos.tempo
-					from profissionais_servicos
-					INNER JOIN servicos ON servicos.id = profissionais_servicos.id_servico 
-					where profissionais_servicos.id_profissional = ? and profissionais_servicos.id_servico = ?";
-				$sql = $this->db->prepare($sql);
-				$sql->execute(array($prof, $serv));
+				$profServ = $profissionais->getServico($prof, $serv);
 
 				//se serviço estiver vinculado ao profissional
-				if($sql->rowCount() > 0){
-					$profServ = $sql->fetch(); //salva serviço vinculado
-
+				if($profServ){
+					$profDisp = $profDisp[0];
 					$hora = date('H:i', strtotime($profDisp['hora'])); //'08:00'; //hora inicial
 					$horaFinal =  date('H:i', strtotime($profDisp['hora_final'])); //'18:00'; //hora final
 					$duracao = date('i', strtotime($profServ['tempo'])); //tempo do serviço
@@ -83,17 +87,11 @@
 						$hora = ( intval($m) < $duracao  ) ? $h.':'.$duracao : date('H', strtotime('+1 hour')).':00';
 					}
 
-					//busca horários agendados
-					$sql = "SELECT hora from agenda 
-						where data = ? and id_profissional = ? 
-						order by 1";
-					$sql = $this->db->prepare($sql);
-					$sql->execute(array($dt, $prof)); 
+					//busca agendamentos
+					$h = $this->getAgendamento($dt, $prof);
 
 					//se tiver horários
-					if($sql->rowCount() > 0){
-						$h = $sql->fetchAll();
-
+					if($h){
 						//recebe horários	
 						foreach($h as $item){
 							array_push($horarios, date('H:i', strtotime( $item['hora'] ) ) );

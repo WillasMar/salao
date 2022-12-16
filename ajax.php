@@ -107,10 +107,10 @@
 		echo json_encode($dados, JSON_FORCE_OBJECT);
 	}
 
-	$h = $profissionais->getIndisponibilidade(4, 0);
+	//$h = $agenda->getHorarios(3, 1, '2022-12-16');
 	
-	echo '<pre>';
-	print_r($h);
+	//echo '<pre>';
+	//print_r($h);
 
 		
 
