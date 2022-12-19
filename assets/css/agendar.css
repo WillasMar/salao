@@ -210,3 +210,6 @@ body{
 #modalAgendar #inputNome{
     text-transform: capitalize;
 }
+#modalAgendar .optionOff{
+    color: #aaa;
+}

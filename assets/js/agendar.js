@@ -60,8 +60,6 @@ $(function(){
 	}
 
 	function preencheDados(horarios){
-		console.log(horarios)
-
 		let optionH = '' //horários
 		let optionP = '' //profissionais
 		let optionS = '' //serviços
@@ -87,11 +85,10 @@ $(function(){
 				}
 
 				if(idIndisponivel){
-					optionP = optionP + '<option value="'+id+'">*'+nome+'</option>'
+					optionP = optionP + '<option class="optionOff" value="'+id+'">*'+nome+'</option>'
 				}else{
 					optionP = optionP + '<option value="'+id+'"><span>'+nome+'</span></option>'
-				}
-								
+				}								
 			}	
 		}
 
@@ -128,16 +125,50 @@ $(function(){
 		}else{
 			$('#profHorario').removeClass('profHorarioOff')
 		}
+	}
 
+	function somenteNumeros(input){
+		//retorna true ou false
+		return /^[0-9]+$/.test(input)
+	}
+
+	//substitui os zeros mantendo outros digitos
+	function aplicarMask(campo, mask){
+		let val = $(campo).val().replace(/[^0-9]/g, '')
+		let valNovo = ''
+		let iVal = 0
+
+		for(let item in mask){
+			if( mask[item] == '0' ){
+				if(val[iVal]){
+					valNovo += val[iVal]
+					iVal++
+				}else{
+					valNovo += ' '
+				}
+				
+			}else{
+				valNovo += mask[item]
+			}
+		}
+
+		$(campo).val(valNovo)
+	}
+
+	function removeMask(campo){
+		//retorna sem máscara
+		return $(campo).val().replace(/[^0-9]/g, '')
 	}
 
 	//ao abrir modal agendar
 	$('#modalAgendar').on('shown.bs.modal', function(){
-		$(this).find('#nomeHora').focus()
+		//foca no campo nome
+		$(this).find('#inputNome').focus()
 	})
 
 	//ao fechar modal agendar
 	$('#modalAgendar').on('hide.bs.modal', function(){
+		//recarrega a página
 		location.reload()
 	})
 
@@ -237,33 +268,46 @@ $(function(){
 		let celular = $(this).find('#inputCelular')
 
 		//verifica campos obrigatórios
-		if( !$(prof).val() || !$(servico).val() || !$(data).val() || !$(hora).val() || !$(nome).val() ){
+		if( !$(prof).val() || !$(servico).val() || !$(data).val() || !$(hora).val() || !$(nome).val() || 
+			removeMask(celular).length < 11 )
+		{
+			//armazena campos com problema
+			let campos = [] 
+
 			if( !$(prof).val() ){
 				$(prof).css('border-color', 'red')
-				$(prof).focus()		
+				campos.push( $(prof) )
 			}
 
 			if( !$(servico).val() ){
 				$(servico).css('border-color', 'red')
-				$(servico).focus()		
+				campos.push( $(servico) )		
 			}
 
 			if( !$(data).val() ){
 				$(data).css('border-color', 'red')
-				$(data).focus()		
+				campos.push( $(data) )		
 			}
 
 			if( !$(hora).val() ){
 				$(hora).css('border-color', 'red')
-				$(hora).focus()
+				campos.push( $(hora) )
 			}
 
 			if( !$(nome).val() ){
 				$(nome).css('border-color', 'red')
-				$(nome).focus()	
+				campos.push( $(nome) )	
 			}	
 
-		//caso campos estejam prenchidos
+			if( removeMask(celular).length < 11 ){
+				$(celular).css('border-color', 'red')
+				campos.push( $(celular) )	
+			}
+
+			//foca no primeiro campo da sequência
+			$( campos[0] ).focus()
+
+		//caso os campos estejam prenchidos
 		}else{ 
 			let dataForm = new FormData(this)
 			dataForm.append('agendarServico', true)
@@ -306,8 +350,48 @@ $(function(){
 		}
 	})
 
-	//ao digitar no campo
-	$('input').keyup(function(){
+	//ao pressionar tecla nos campos
+	$('input').keypress(function(e){
+		//verifica quantidade de dígitos nos campos
+		if(	removeMask( $(this) ).length >= $(this).attr('data-length') ){
+			return false
+		}
+	})
+
+	//ao pressionar tecla nos campos de números
+	$('.somenteNumeros').keypress(function(e){
+		//se não for número
+		if( !somenteNumeros(e.key) ){
+			return false
+		}		
+	})
+
+	//ao soltar tecla nos campos
+	$('input').keyup(function(e){
+		let campo = $(this)
+		let tipo = $(this).attr('data-mask')
+
+		if(e.key != 'Backspace'){
+			switch(tipo){
+				case 'celular':
+					if( removeMask( $('#inputCelular')).length <= 11 ){
+						setTimeout( function(){
+							aplicarMask(campo, '(00) 0 0000-0000')
+						}, 0 )
+					}		
+
+					break
+				case 'cpf':
+					if( removeMask( $('#inputCpf')).length <= 11 ){
+						setTimeout( function(){
+							aplicarMask(campo, '000.000.000-00')
+						}, 0 )
+					}		
+
+					break
+			}
+		}
+
 		$(this).css('border-color', '#ced4da')
 	})
 

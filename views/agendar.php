@@ -163,11 +163,11 @@
       		<div class="modalGrupo">
             <div class="form-group">
         			<label for="inputCpf"><b>CPF:</b></label>
-        			<input type="text" name="agendar[cpf]" class="form-control" id="inputCpf" maxlength="11" />
+        			<input type="text" name="agendar[cpf]" class="form-control somenteNumeros" id="inputCpf" data-mask="cpf" data-length='11' placeholder="___.___.___-__" />
             </div>
             <div class="form-group"> 
               <label for="inputCelular"><b>Celular:</b></label>
-              <input type="text" name="agendar[celular]" class="form-control" id="inputCelular" />
+              <input type="text" name="agendar[celular]" class="form-control somenteNumeros" id="inputCelular" data-mask="celular" data-length='11' placeholder="(  ) _ ____-____" />
       		  </div>
           </div>
       	</form>
