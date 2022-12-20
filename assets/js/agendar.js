@@ -269,8 +269,8 @@ $(function(){
 
 		//verifica campos obrigatórios
 		if( !$(prof).val() || !$(servico).val() || !$(data).val() || !$(hora).val() || !$(nome).val() || 
-			removeMask(celular).length < 11 )
-		{
+			removeMask(celular).length < 11 ){
+
 			//armazena campos com problema
 			let campos = [] 
 
@@ -313,7 +313,7 @@ $(function(){
 			dataForm.append('agendarServico', true)
 
 			let retorno = agendar(dataForm)
-			
+			console.log(retorno)
 			$('.alert').show('fast')
 			$('.alert .msg').html( retorno.msg )
 			$('.alert').removeClass('alert-success')

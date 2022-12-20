@@ -4,6 +4,7 @@
 
 	class Agenda extends Model{
 
+		//busca agendamento por data
 		public function getAgenda($dt){
 			$dados = array();
 
@@ -71,8 +72,8 @@
 				//se serviço estiver vinculado ao profissional
 				if($profServ){
 					$profDisp = $profDisp[0];
-					$hora = date('H:i', strtotime($profDisp['hora'])); //'08:00'; //hora inicial
-					$horaFinal =  date('H:i', strtotime($profDisp['hora_final'])); //'18:00'; //hora final
+					$hora = date('H:i', strtotime($profDisp['hora'])); //hora inicial
+					$horaFinal =  date('H:i', strtotime($profDisp['hora_final'])); //hora final
 					$duracao = date('i', strtotime($profServ['tempo'])); //tempo do serviço
 					
 					//se for data atual, define hora atual
@@ -113,6 +114,7 @@
 			return $dados;
 		}
 
+		//grava agendamento
 		public function agendar($array){
 			$profissionais = new Profissionais();
 			$servicos = new Servicos();
@@ -133,6 +135,7 @@
 				$serv = addslashes( $array['agendar']['servico'] );
 				$data = $array['agendar']['data'];
 				$hora = $array['agendar']['hora'];
+				$hora_fim = $array['agendar']['hora'];
 				$nome = addslashes( $array['agendar']['nome'] );
 				$email = addslashes( $array['agendar']['email'] );
 				$cpf = addslashes( $array['agendar']['cpf'] );
@@ -147,46 +150,41 @@
 				if($profDisp && !$profIndisp){
 					//busca serviço vinculado ao profissional
 					$profServ = $profissionais->getServico($prof, $serv);
-					$servico = $servicos->getServico($serv);
 
-					//se haver serviço
-					if($servico){
-						//se haver serviço pro profissional
-						if($profServ){
-							//verifica horários
-							$horarios = $this->getHorarios($prof, $serv, $data);
+					//se haver serviço pro profissional
+					if($profServ){
+						$tempoServ = date('i', strtotime($profServ['tempo']));
+						$hora_fim = date('H:i', strtotime('+'.$tempoServ.' minutes') );
 
-							//se haver horário disponível
-							if( in_array(  $hora, $horarios ) ){
-								$dados['horarios'] = $horarios;
-								
-								$sql = "insert into agenda(id_profissional, id_servico, data, hora, nome, email, cpf, celular) values (?, ?, ?, ?, ?, ?, ?, ?)";
-								$sql = $this->db->prepare($sql);
-								$sql->execute( array($prof, $servico, $data, $hora, $nome, $email, $cpf, $celular) );
-								
-								$semanas = array('Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado');
+						//verifica horários
+						$horarios = $this->getHorarios($prof, $serv, $data);
 
-								$dados['result'] = $this->db->lastInsertId();
-								$dados['msg'] = "
-									<p>Horário agendado para <u class='nomePessoa'>".$nome."</u></p>
-									<p>com <b>".$profDisp[0]['nome']."</b></p>
-									<p><b>".date('d/m/Y', strtotime($data))."</b></p>
-									<p><b>".$semanas[ date('w', strtotime($data)) ]."</b></p>
-									<p><b>".date('H:i', strtotime($hora))."h</b></p>
-								";
+						//se haver horário disponível
+						if( in_array(  $hora, $horarios ) ){
+							$dados['horarios'] = $horarios;
 							
-							}else{
-								$dados['result'] = false;
-								$dados['msg'] = '<p>Horário de <b>'.date('H:i', strtotime($hora)).'h</b> indisponível para <b>'.date('d/m/Y', strtotime($data)).'</b></p>';
-							}
+							$sql = "insert into agenda(id_profissional, id_servico, data, hora, hora_fim, nome, email, cpf, celular) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+							$sql = $this->db->prepare($sql);
+							$sql->execute( array($prof, $servico, $data, $hora, $hora_fim, $nome, $email, $cpf, $celular) );
+							
+							$semanas = array('Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado');
+
+							$dados['result'] = $this->db->lastInsertId();
+							$dados['msg'] = "
+								<p>Horário agendado para <u class='nomePessoa'>".$nome."</u></p>
+								<p>com <b>".$profDisp[0]['nome']."</b></p>
+								<p><b>".date('d/m/Y', strtotime($data))."</b></p>
+								<p><b>".$semanas[ date('w', strtotime($data)) ]."</b></p>
+								<p><b>".date('H:i', strtotime($hora))."h</b></p>
+							";
+						
 						}else{
 							$dados['result'] = false;
-							$dados['msg'] = '<p>Profissional <b>'.$profDisp['nome'].'</b> não faz o serviço <b>'.$servico['descricao'].'</b>!</p>';
+							$dados['msg'] = '<p>Horário de <b>'.date('H:i', strtotime($hora)).'h</b> indisponível para <b>'.date('d/m/Y', strtotime($data)).'</b></p>';
 						}
-
 					}else{
 						$dados['result'] = false;
-						$dados['msg'] = '<p>Serviço não encontrado!<p>';
+						$dados['msg'] = '<p>Profissional <b>'.$profDisp['nome'].'</b> não faz o serviço <b>'.$servico['descricao'].'</b>!</p>';
 					}
 
 				}else{
