@@ -32,30 +32,27 @@
 
 		//busca disponibilidade pelo dia da semana
 		public function getDisponibilidade($semana, $prof){
-			$dados = array();
-			$and = '';
-
+			$dados = array();			
 			$semana = addslashes($semana);
+			$prof = addslashes($prof);
+			$horaAtual = "'".date('H:i:s')."'";
 
-			if($prof){
-				$and = 'and profissionais_horarios.id_profissional = '.$prof;
-			}
-
-			$sql = "select 
-					profissionais_horarios.id, 
-					profissionais_horarios.id_profissional, 
-					profissionais_horarios.semana, 
-					profissionais_horarios.hora, 
-					profissionais_horarios.hora_final,
-					profissionais.nome,
-					(SELECT COUNT(*) FROM profissionais_servicos
-						WHERE profissionais_servicos.id_profissional = profissionais_horarios.id_profissional) as qtdServico
-				from profissionais_horarios 
-				inner join profissionais on profissionais.id = profissionais_horarios.id_profissional
-				where profissionais_horarios.semana = ? $and
-				order by 7 desc";
+			$sql = "SELECT ph.id, ph.id_profissional, ph.semana, ph.hora, ph.hora_final, p.nome,
+					(seletc COUNT(*) from profissionais_servicos ps
+						where ps.id_profissional = ph.id_profissional
+					) as qtdServicos,
+					coalesce((select 1 from profissionais_horarios ph2 
+						where ph2.id_profissional = ph.id_profissional and 
+							ph2.semana = :semana and ($horaAtual not between ph2.hora and ph2.hora_final)
+					), 0) as profIndisponivel	
+				FROM profissionais_horarios ph
+				INNER JOIN profissionais p on ph.id_profissional = p.id 
+				WHERE ph.semana = :semana AND (ph.id_profissional = :prof OR :prof = 0)
+				ORDE BY 7 DESC";
 			$sql = $this->db->prepare($sql);
-			$sql->execute(array($semana));
+			$sql->bindValue(':semana', $semana);
+			$sql->bindValue(':prof', $prof);
+			$sql->execute();
 
 			if($sql->rowCount() > 0){
 				$dados = $sql->fetchAll();
@@ -134,7 +131,7 @@
 			$sql = "SELECT profissionais_servicos.id, 
 						profissionais_servicos.id_profissional,
 						profissionais_servicos.id_servico,
-						servicos.tempo
+						servicos.tempo, servicos.descricao
 					from profissionais_servicos
 					INNER JOIN servicos ON servicos.id = profissionais_servicos.id_servico 
 					where profissionais_servicos.id_profissional = ? and profissionais_servicos.id_servico = ?";

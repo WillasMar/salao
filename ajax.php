@@ -103,16 +103,15 @@
 	if( isset($_POST['agendarServico']) && !empty($_POST['agendarServico']) ){
 
 		$dados = $agenda->agendar($_POST);
-
+		
 		echo json_encode($dados, JSON_FORCE_OBJECT);
 	}
 
-	/*$h = $agenda->getHorarios(1, 1, '2022-12-20');
+	$h = $profissionais->getDisponibilidade(5, 2);
 
 	echo '<pre>';
-	//print_r($h);
-	print_r( $profissionais->getServico(1, 1) );
-	echo '</pre>';*/
+	print_r($h);
+	echo '</pre>';
 
 	
 

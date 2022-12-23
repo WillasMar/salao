@@ -117,7 +117,6 @@
 		//grava agendamento
 		public function agendar($array){
 			$profissionais = new Profissionais();
-			$servicos = new Servicos();
 
 			$dados['result'] = 'aviso';
 			$dados['msg'] = "<p>Sem dados, verifique o <u>Profissional</u>, <u>Serviço</u>, <u>Data</u>, <u>Hora</u>, <u>Nome</u>, e <u>Celular</u></p>";
@@ -132,7 +131,7 @@
 				(isset($array['agendar']['email']) && isset($array['agendar']['cpf']))
 			){
 				$prof = addslashes( $array['agendar']['profissional'] );
-				$serv = addslashes( $array['agendar']['servico'] );
+				$servico = addslashes( $array['agendar']['servico'] );
 				$data = $array['agendar']['data'];
 				$hora = $array['agendar']['hora'];
 				$hora_fim = $array['agendar']['hora'];
@@ -142,14 +141,13 @@
 				$celular = addslashes( $array['agendar']['celular'] );
 
 				//busca profissional disponível
-				$profissionais = new Profissionais();
 				$profDisp = $profissionais->getDisponibilidade( date( 'w', strtotime($data) ), $prof );
 				$profIndisp = $profissionais->getIndisponibilidade( date( 'w', strtotime($data) ), $prof );
 
-				//se profissional estiver disponível
+				//se profissional trabalha no dia, e não está indisponível
 				if($profDisp && !$profIndisp){
 					//busca serviço vinculado ao profissional
-					$profServ = $profissionais->getServico($prof, $serv);
+					$profServ = $profissionais->getServico($prof, $servico);
 
 					//se haver serviço pro profissional
 					if($profServ){
@@ -157,7 +155,7 @@
 						$hora_fim = date('H:i', strtotime('+'.$tempoServ.' minutes') );
 
 						//verifica horários
-						$horarios = $this->getHorarios($prof, $serv, $data);
+						$horarios = $this->getHorarios($prof, $servico, $data);
 
 						//se haver horário disponível
 						if( in_array(  $hora, $horarios ) ){
@@ -184,7 +182,7 @@
 						}
 					}else{
 						$dados['result'] = false;
-						$dados['msg'] = '<p>Profissional <b>'.$profDisp['nome'].'</b> não faz o serviço <b>'.$servico['descricao'].'</b>!</p>';
+						$dados['msg'] = '<p>Profissional <b>'.$profDisp['nome'].'</b> não faz o serviço <b>'.$profDisp['descricao'].'</b>!</p>';
 					}
 
 				}else{
